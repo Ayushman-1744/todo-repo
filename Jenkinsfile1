@@ -6,9 +6,9 @@ pipeline {
     }
 
     environment {
-        IMAGE_NAME = "streamlit_app"
+        IMAGE_NAME = "ayushman-1744"
         IMAGE_TAG = "latest"
-        CONTAINER_NAME = "streamlit_container"
+        CONTAINER_NAME = "todo-app_container"
         HOST_PORT = "8501"
         CONTAINER_PORT = "8501"
     }
