@@ -10,9 +10,9 @@ pipeline {
     }
 
     stages {
-        stage('Checkout Code') {
+        stage('Checkout SCM') {
             steps {
-                checkout scm
+                git branch: 'main', url: ''
             }
         }
 
