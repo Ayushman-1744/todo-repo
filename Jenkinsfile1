@@ -42,7 +42,7 @@ pipeline {
             when { expression { params.ACTION == 'STOP' } }
             steps {
                 sh "docker stop ${CONTAINER_NAME} || true"
-                sh "docker rm ${CONTAINER_NAME} || true"
+                sh "docker rm -f ${CONTAINER_NAME} || true"
             }
         }
     }
