@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    parameters {
+        choice(name: 'ACTION', choices: ['RUN', 'STOP'], description: 'Choose RUN to start or STOP to remove the container')
+    }
+
     environment {
         IMAGE_NAME = "streamlit_app"
         IMAGE_TAG = "latest"
@@ -11,43 +15,45 @@ pipeline {
 
     stages {
         stage('Checkout SCM') {
+            when { expression { params.ACTION == 'RUN' } }
             steps {
                 git branch: 'master', url: 'https://github.com/Ayushman-1744/todo-repo.git'
             }
         }
 
-        stage('Docker Version Test') {
-            steps {
-                sh 'docker --version'
-            }
-        }
-
         stage('Build Docker Image') {
+            when { expression { params.ACTION == 'RUN' } }
             steps {
-                script {
-                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
-                }
+                sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
             }
         }
 
         stage('Run Docker Container') {
+            when { expression { params.ACTION == 'RUN' } }
             steps {
-                script {
-                    sh """
-                        docker rm -f ${CONTAINER_NAME} || true
-                        docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:${IMAGE_TAG}
-                    """
-                }
+                sh """
+                    docker rm -f ${CONTAINER_NAME} || true
+                    docker run -d --name ${CONTAINER_NAME} -p ${HOST_PORT}:${CONTAINER_PORT} ${IMAGE_NAME}:${IMAGE_TAG}
+                """
+            }
+        }
+
+        stage('Stop Docker Container') {
+            when { expression { params.ACTION == 'STOP' } }
+            steps {
+                sh "docker stop ${CONTAINER_NAME} || true"
+                sh "docker rm ${CONTAINER_NAME} || true"
             }
         }
     }
 
     post {
         success {
-            echo "Streamlit Docker container launched successfully."
+            echo "✔️ Action '${params.ACTION}' completed successfully."
         }
         failure {
-            echo "Something went wrong. Check the logs above."
+            echo "❌ Action '${params.ACTION}' failed."
         }
     }
 }
+
