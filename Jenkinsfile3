@@ -1,0 +1,68 @@
+pipeline {
+    agent any
+
+    environment {
+        IMAGE_NAME = "streamlit_app"
+        IMAGE_TAG = "latest"
+    }
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh "docker build -t ${IMAGE_NAME}:${IMAGE_TAG} ."
+                }
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                script {
+                    sh "docker run -d -p 8501:8501 ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
+
+        // Optional stage to push to Docker Hub
+        // stage('Push to Docker Hub') {
+        //     steps {
+        //         withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+        //             sh "docker login -u $DOCKER_USER -p $DOCKER_PASS"
+        //             sh "docker tag ${IMAGE_NAME}:${IMAGE_TAG} $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}"
+        //             sh "docker push $DOCKER_USER/${IMAGE_NAME}:${IMAGE_TAG}"
+        //         }
+        //     }
+        // }
+    }
+}
+
+// stage('Run and Auto-Delete Docker Container') {
+   // steps {
+     //   script {
+       //     sh "docker run --rm -p 8501:8501 ${IMAGE_NAME}:${IMAGE_TAG}"
+        //}
+    //}
+//}
+
+//stage('Run and Remove Docker Container') {
+  //  steps {
+    //    script {
+      //      def containerId = sh(script: "docker run -d -p 8501:8501 ${IMAGE_NAME}:${IMAGE_TAG}", returnStdout: true).trim()
+            
+            // Wait a bit or do something like testing
+        //    sleep 10  // simulate test time
+
+            // Stop and remove the container
+          //  sh "docker stop ${containerId}"
+            //sh "docker rm ${containerId}"
+        //}
+    //}
+//}
+
+
