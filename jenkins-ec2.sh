@@ -17,9 +17,6 @@ yum install docker -y
 sudo systemctl start docker
 sudo systemctl enable docker
 
-# Give docker root permission 
-sudo usermod -aG docker jenkins
-
 
 # Install Jenkins
 sudo yum install jenkins -y
@@ -28,7 +25,11 @@ sudo yum install jenkins -y
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
 
+# Give docker root permission 
+usermod -aG docker jenkins
+
 # Restart Jenkins
+sudo systemctl restart docker
 sudo systemctl restart jenkins
 
 sudo yum install git -y
