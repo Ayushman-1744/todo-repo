@@ -20,11 +20,6 @@ sudo systemctl enable docker
 # Give docker root permission 
 sudo usermod -aG docker jenkins
 
-# Restart Jenkins
-sudo systemctl restart jenkins
-
-
-
 
 # Install Jenkins
 sudo yum install jenkins -y
@@ -32,6 +27,9 @@ sudo yum install jenkins -y
 # Start Jenkins service
 sudo systemctl start jenkins
 sudo systemctl enable jenkins
+
+# Restart Jenkins
+sudo systemctl restart jenkins
 
 sudo yum install git -y
 curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
@@ -44,6 +42,7 @@ terraform --version
 aws --version
 git --version
 docker --version
+jenkins --version
 
 # Print Jenkins initial admin password
 echo "Jenkins Installation Complete!"
